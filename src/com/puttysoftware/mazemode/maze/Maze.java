@@ -383,21 +383,17 @@ public class Maze implements MazeConstants {
     private void switchLevelInternal(final int level) {
 	if (this.activeLevel != level) {
 	    if (this.mazeData != null) {
-		try {
+		try (final XDataWriter writer = this.getLevelWriterX()) {
 		    // Save old level
-		    final XDataWriter writer = this.getLevelWriterX();
 		    this.writeMazeLevelX(writer);
-		    writer.close();
 		} catch (final IOException io) {
 		    // Ignore
 		}
 	    }
 	    this.activeLevel = level;
-	    try {
+	    try (final XDataReader reader = this.getLevelReaderX()) {
 		// Load new level
-		final XDataReader reader = this.getLevelReaderX();
 		this.readMazeLevelX(reader);
-		reader.close();
 	    } catch (final IOException io) {
 		// Ignore
 	    }
@@ -451,11 +447,9 @@ public class Maze implements MazeConstants {
     public boolean addLevel(final int rows, final int cols, final int floors) {
 	if (this.levelCount < Maze.MAX_LEVELS) {
 	    if (this.mazeData != null) {
-		try {
+		try (final XDataWriter writer = this.getLevelWriterX()) {
 		    // Save old level
-		    final XDataWriter writer = this.getLevelWriterX();
 		    this.writeMazeLevelX(writer);
-		    writer.close();
 		} catch (final IOException io) {
 		    // Ignore
 		}
@@ -848,17 +842,16 @@ public class Maze implements MazeConstants {
 	// Make base paths the same
 	m.basePath = this.basePath;
 	// Create metafile reader
-	final XDataReader metaReader = DataIOFactory.createTagReader(m.basePath + File.separator + "metafile.xml",
-		"maze");
-	// Read metafile
-	final int version = m.readMazeMetafileX(metaReader);
-	metaReader.close();
-	// Create data reader
-	final XDataReader dataReader = m.getLevelReaderX();
-	// Read data
-	m.readMazeLevelX(dataReader, version);
-	// Close reader
-	dataReader.close();
+	try (final XDataReader metaReader = DataIOFactory.createTagReader(m.basePath + File.separator + "metafile.xml",
+		"maze")) {
+	    // Read metafile
+	    final int version = m.readMazeMetafileX(metaReader);
+	    // Create data reader
+	    try (final XDataReader dataReader = m.getLevelReaderX()) {
+		// Read data
+		m.readMazeLevelX(dataReader, version);
+	    }
+	}
 	return m;
     }
 
@@ -905,18 +898,16 @@ public class Maze implements MazeConstants {
 
     public void writeMazeX() throws IOException {
 	// Create metafile writer
-	final XDataWriter metaWriter = DataIOFactory.createTagWriter(this.basePath + File.separator + "metafile.xml",
-		"maze");
-	// Write metafile
-	this.writeMazeMetafileX(metaWriter);
-	// Close writer
-	metaWriter.close();
+	try (final XDataWriter metaWriter = DataIOFactory
+		.createTagWriter(this.basePath + File.separator + "metafile.xml", "maze")) {
+	    // Write metafile
+	    this.writeMazeMetafileX(metaWriter);
+	}
 	// Create data writer
-	final XDataWriter dataWriter = this.getLevelWriterX();
-	// Write data
-	this.writeMazeLevelX(dataWriter);
-	// Close writer
-	dataWriter.close();
+	try (final XDataWriter dataWriter = this.getLevelWriterX()) {
+	    // Write data
+	    this.writeMazeLevelX(dataWriter);
+	}
     }
 
     private XDataWriter getLevelWriterX() throws IOException {

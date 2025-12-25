@@ -46,8 +46,7 @@ public class RuleSetLoadTask extends Thread {
 	this.loadFrame.setVisible(true);
 	final Application app = MazeMode.getApplication();
 	final String sg = "Rule Set";
-	try {
-	    final XDataReader ruleSetFile = DataIOFactory.createTagReader(this.filename, "ruleset");
+	try (final XDataReader ruleSetFile = DataIOFactory.createTagReader(this.filename, "ruleset")) {
 	    try {
 		final int magic = ruleSetFile.readInt();
 		if (magic == RuleSetConstants.RULE_SET_MAGIC_NUMBER) {

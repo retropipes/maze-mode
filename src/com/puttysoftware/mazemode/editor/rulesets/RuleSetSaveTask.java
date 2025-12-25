@@ -34,11 +34,9 @@ public class RuleSetSaveTask extends Thread {
 	if (!hasExtension) {
 	    this.filename += Extension.getRuleSetExtensionWithPeriod();
 	}
-	try {
-	    final XDataWriter ruleSetFile = DataIOFactory.createTagWriter(this.filename, "ruleset");
+	try (final XDataWriter ruleSetFile = DataIOFactory.createTagWriter(this.filename, "ruleset")) {
 	    ruleSetFile.writeInt(RuleSetConstants.RULE_SET_MAGIC_NUMBER);
 	    app.getObjects().writeRuleSetX(ruleSetFile);
-	    ruleSetFile.close();
 	    CommonDialogs.showTitledDialog(sg + " file saved.", "Rule Set Picker");
 	} catch (final FileNotFoundException fnfe) {
 	    CommonDialogs.showDialog("Saving the " + sg.toLowerCase()

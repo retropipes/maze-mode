@@ -243,8 +243,8 @@ public class MazeRegistration {
 	// Load maze registry file
 	final ArrayList<String> registeredNames = new ArrayList<>();
 	try (final FileInputStream fis = new FileInputStream(
-		basePath + File.separator + "MazeRegistry" + Extension.getRegistryExtensionWithPeriod())) {
-	    final ResourceStreamReader rsr = new ResourceStreamReader(fis);
+		basePath + File.separator + "MazeRegistry" + Extension.getRegistryExtensionWithPeriod());
+		final ResourceStreamReader rsr = new ResourceStreamReader(fis)) {
 	    String input = "";
 	    while (input != null) {
 		input = rsr.readString();
@@ -265,8 +265,8 @@ public class MazeRegistration {
 	// Load maze registry file
 	final ArrayList<String> registeredNames = new ArrayList<>();
 	try (final FileInputStream fis = new FileInputStream(
-		basePath + File.separator + "UserMazeRegistry" + Extension.getRegistryExtensionWithPeriod())) {
-	    final ResourceStreamReader rsr = new ResourceStreamReader(fis);
+		basePath + File.separator + "UserMazeRegistry" + Extension.getRegistryExtensionWithPeriod());
+		final ResourceStreamReader rsr = new ResourceStreamReader(fis)) {
 	    String input = "";
 	    while (input != null) {
 		input = rsr.readString();
